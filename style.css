@@ -41,12 +41,12 @@ input[type="checkbox"] {
 input[type="checkbox"]::before {
     content: "";
     position: absolute;
-    width: 30px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     background-color: #d5d5d5;
     border-radius: 50%;
-    left: 0.5px;
-    top: 0.5px;
+    left: 2.5px;
+    top: 2px;
     transition: .3s;
 }
 
@@ -55,9 +55,10 @@ input[type="checkbox"]::after {
     position: absolute;
     color: #34384b;
     font-size: 10px;
-    left: 6px;
+    left: 8px;
     top: 10px;
     transition: .3s;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 input[type="checkbox"]:checked {
@@ -66,11 +67,12 @@ input[type="checkbox"]:checked {
 
 input[type="checkbox"]:checked::before {
     background: #000;
-    left: 35px;
+    left: 36px;
 }
 
 input[type="checkbox"]:checked::after {
     content: "ON";
     color: #FFF;
-    left: 43px;
+    left: 44px;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
