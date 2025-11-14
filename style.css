@@ -82,3 +82,58 @@ input[type="checkbox"]:checked::after {
     left: 44px;
     font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
+
+/*  SIDEBAR  */
+#sidebar {
+    position: fixed;
+    top: 0;
+    left: -260px;
+    width: 260px;
+    height: 100vh;
+    background: rgb(57, 5, 106);
+    padding: 20px;
+    transition: 0.4s ease;
+    z-index: 1000;
+}
+
+#sidebar.open {
+    left: 0;
+}
+
+#sidebar button {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    margin: 20px;
+}
+
+/* LISTA */
+#sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#sidebar li {
+    margin: 15px 0;
+}
+
+#sidebar a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+/* OVERLAY */
+#overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+}
+
+#overlay.show {
+    display: block;
+    z-index: 900;
+}
