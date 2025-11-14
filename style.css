@@ -9,16 +9,68 @@ header {
     align-items: center;
     justify-content: space-between;
     background-color:rgb(57, 5, 106);
-    width: 100vw;
+    width: 200vw;
+    height: 10vh;
 }
 
 header img {
     width: 30px;
     height: auto;
+    margin-right: 10px;
+}
+
+header h1 {
+    display: flex;
+    margin-left: 600px;
+    font-family: sans-serif;
+    color: #FFF;
 }
 
 input[type="checkbox"] {
-    width: 50px;
-    height: 25px;
+    margin-left: 10px;
     appearance: none;
+    width: 65px;
+    height: 32px;
+    background-color: #707070;
+    border-radius: 50px;
+    position: absolute;
+    cursor: pointer;
+    transition: .3s;
+}
+
+input[type="checkbox"]::before {
+    content: "";
+    position: absolute;
+    width: 30px;
+    height: 32px;
+    background-color: #d5d5d5;
+    border-radius: 50%;
+    left: 0.5px;
+    top: 0.5px;
+    transition: .3s;
+}
+
+input[type="checkbox"]::after {
+    content: "OFF";
+    position: absolute;
+    color: #34384b;
+    font-size: 10px;
+    left: 6px;
+    top: 10px;
+    transition: .3s;
+}
+
+input[type="checkbox"]:checked {
+    background: linear-gradient(91deg, #ff01a5d4, #4b00ffd4);
+}
+
+input[type="checkbox"]:checked::before {
+    background: #000;
+    left: 35px;
+}
+
+input[type="checkbox"]:checked::after {
+    content: "ON";
+    color: #FFF;
+    left: 43px;
 }
