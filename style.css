@@ -1,7 +1,12 @@
 body {
     margin: 0;
-    background-color: rgb(12, 8, 8);
+    background-color: white;
     display: flex;
+    transition: background-color 0.4s;
+}
+
+.modo-escuro {
+    background-color: rgb(12, 8, 8);
 }
 
 header {
