@@ -38,6 +38,24 @@ header h1 {
     color: #FFF;
 }
 
+h1 {
+    animation: 
+    digitando 3.5s steps(25, end) forwards,
+    piscando 0.75s step-end infinite;
+}
+
+/*
+@keyframes digitando {
+    from { width 0; }
+    to { width: 100%;}
+}
+
+@keyframes piscando {
+    from, to { border-color: transparent; }
+    50% { border-color: black; }
+  }
+*/
+
 .saida {
     width: 50px;
     height: auto;
@@ -157,4 +175,8 @@ input[type="checkbox"]:checked::after {
 #overlay.show {
     display: block;
     z-index: 900;
+}
+
+#menuBtn {
+    cursor: pointer;
 }
