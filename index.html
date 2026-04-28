@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="pt-br" class="bg-[#02040a] overflow-x-hidden">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anderson Ribeiro | Desenvolvedor de Sistemas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        .cursor-none { cursor: none !important; }
+        .font-cyber { font-family: 'Roboto Mono', monospace; }
+        html { scroll-behavior: smooth !important; overflow-anchor: none; }
+
+        #bg-light {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle 250px at transparent, transparent 0%, rgba(2, 4, 10, 1) 100%);
+            pointer-events: none; z-index: -1;
+        }
+
+        #custom-cursor { 
+            transition: width 0.2s, height 0.2s, border-color 0.2s, background-color 0.2s; 
+            transform: translate(-50%, -50%); 
+        }
+
+        .session-title {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: inline-block; cursor: default;
+        }
+        .session-title:hover {
+            text-shadow: 3px 0 #fff, -3px 0 #ff1f57;
+            letter-spacing: 0.4em; transform: translateX(15px); color: #fff !important;
+        }
+
+        .reveal-section {
+            opacity: 0; transform: translateY(40px); filter: blur(10px);
+            transition: all 1s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .reveal-section.active { opacity: 1; transform: translateY(0); filter: blur(0); }
+
+        .neon-flicker { animation: flicker 3s linear infinite; }
+        @keyframes flicker {
+            0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+                opacity: 1; text-shadow: 0 0 10px #ff1f57, 0 0 20px #ff1f57; color: #fff;
+            }
+            20%, 21.999%, 63%, 63.999%, 65%, 69.999% { opacity: 0.4; text-shadow: none; color: #7289a3; }
+        }
+
+        .hud-tag {
+            background: rgba(255, 31, 87, 0.1);
+            border: 1px solid rgba(255, 31, 87, 0.3);
+            color: #ff1f57; font-size: 10px; padding: 2px 8px;
+            text-transform: uppercase; font-weight: bold;
+        }
+
+        /* --- Estilos da Roleta 3D --- */
+        .perspective { perspective: 1500px; }
+        .preserve-3d { transform-style: preserve-3d; }
+        .backface-hidden { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+        
+        .card-inner { transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1); }
+        .card.flipped .card-inner { transform: rotateY(180deg); }
+
+        #carousel { transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+
+        .footer-custom-bg {
+            position: relative; background-image: url('wmremove-transformed.jpg');
+            background-size: cover; background-position: center; overflow: hidden;
+        }
+        .footer-custom-bg::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(to bottom, #02040a 0%, rgba(2, 4, 10, 0.94) 30%, #02040a 100%);
+            z-index: 1;
+        }
+        .footer-content { position: relative; z-index: 2; }
+
+        /* Esconde o cursor personalizado em telas menores que 1024px (Tablets e Celulares) */
+        @media (max-width: 1024px) {
+            #custom-cursor {
+                display: none !important;
+            }
+            body {
+                cursor: auto !important; /* Devolve o cursor padrão do sistema */
+            }
+            
+            /* Ajuste do Loader para Mobile */
+            #code-cascade {
+                height: 200px; /* Reduz a altura da cascata de código */
+                margin-bottom: 2rem;
+            }
+
+            #loader h1 {
+                font-size: 1.25rem; /* Título menor */
+            }
+
+            /* Ajuste da Roleta 3D para não cortar nas bordas */
+            .perspective {
+                perspective: 1000px;
+            }
+        }
+
+        .stack-card {
+        /* Impede que o mouse "trema" ao entrar no card */
+        transition: transform 0.1s ease-out, border-color 0.3s ease;
+        /* Força o uso da GPU para processar o movimento 3D sem lag */
+        will-change: transform;
+        transform-style: preserve-3d;
+        backface-visibility: hidden;
+        }
+
+        /* Garante que os itens dentro do card (ícones e texto) também pareçam 3D */
+        .stack-card > * {
+            transform: translateZ(20px);
+        }
+
+        /* Estado inicial do ícone */
+        .logo-icon-effect {
+            display: inline-block;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            will-change: transform, text-shadow;
+        }
+
+        .group:hover .logo-icon-effect {
+            /* Efeito de Glitch igual aos títulos */
+            text-shadow: 3px 0 #fff, -3px 0 #ff1f57;
+            /* Deslocamento lateral */
+            transform: translateX(8px); 
+            color: #fff !important;
+        }
+
+        /* Animação de Glitch Estático (Piscando) */
+        @keyframes glitch-flicker {
+            0% { opacity: 1; text-shadow: 2px 0 #fff, -2px 0 #ff1f57; color: #fff; }
+            25% { opacity: 0.3; text-shadow: none; color: #ff1f57; }
+            50% { opacity: 1; text-shadow: -2px 0 #fff, 2px 0 #ff1f57; color: #fff; }
+            75% { opacity: 0.6; text-shadow: none; }
+            100% { opacity: 1; text-shadow: 2px 0 #fff, -2px 0 #ff1f57; color: #fff; }
+        }
+
+        /* Aplica a animação ao passar o mouse */
+        .nav-link:hover {
+            animation: glitch-flicker 0.8s infinite;
+            /* Removemos o transform ou letter-spacing para ele não esticar */
+            transform: none; 
+        }
+
+        /* O site começa "travado" */
+        body.is-loading {
+            overflow: hidden !important;
+            height: 100vh !important;
+        }
+
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(255, 31, 87, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 31, 87, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 31, 87, 0); }
+        }
+
+        .playing-pulse {
+            animation: pulse-red 2s infinite;
+        }
+
+        .bar-anim {
+            animation: equalizer 1s ease-in-out infinite alternate;
+        }
+
+        .bar-anim:nth-child(2) { animation-duration: 0.6s; }
+        .bar-anim:nth-child(3) { animation-duration: 0.8s; }
+
+        @keyframes equalizer {
+            0% { height: 4px; }
+            100% { height: 16px; }
+        }
+
+        /* Estilo específico para o cursor do terminal */
+        /* Cursor piscando (padrão) */
+        #terminal-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 18px;
+            background-color: #ff1f57;
+            margin-left: 4px;
+            vertical-align: middle;
+            animation: terminal-blink 1.2s step-end infinite;
+        }
+
+        /* Classe que vamos adicionar via JS durante a digitação */
+        #terminal-cursor.typing {
+            animation: none !important;
+            opacity: 1 !important;
+        }
+
+        @keyframes terminal-blink {
+            from, to { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        @keyframes eq {
+            0%, 100% { height: 6px; }
+            50% { height: 24px; }
+        }
+        .eq-bar {
+            animation: eq 1s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+            background: linear-gradient(to top, #ff1f57, #ffffff); /* Cores do seu tema */
+        }
+        .b1 { animation-duration: 0.8s; }
+        .b2 { animation-duration: 1.2s; animation-delay: 0.1s; }
+        .b3 { animation-duration: 0.9s; animation-delay: 0.2s; }
+        .b4 { animation-duration: 1.1s; animation-delay: 0.3s; }
+        .b5 { animation-duration: 1.0s; animation-delay: 0.4s; }
+
+        #sound-control {
+            position: fixed !important;
+            bottom: 24px !important;
+            left: 24px !important;
+            z-index: 9999 !important;
+            /* Força o navegador a tratar o botão fora de qualquer contexto de renderização do body */
+            transform: scale(0.60) translateZ(0); 
+
+            /* Garante que o ponto de ancoragem seja o canto inferior esquerdo */
+            transform-origin: bottom left;
+        }
+
+        /* --- MENU MOBILE: CONTAINER --- */
+        #mobile-menu {
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 72px; /* Ajuste conforme a altura da sua navbar */
+            right: 0;
+            width: 70%; /* Largura do menu lateral */
+            height: auto;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(100%);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #mobile-menu.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(0);
+        }
+
+        /* --- BOTÕES CYBERPUNK (MOBILE) --- */
+        .mobile-nav-link {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: rgba(10, 15, 29, 0.9);
+            color: #7289a3;
+            border: 1px solid rgba(255, 31, 87, 0.2);
+            /* O corte poligonal */
+            clip-path: polygon(0 0, 92% 0, 100% 25%, 100% 100%, 8% 100%, 0 75%);
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            margin-bottom: 12px;
+        }
+
+        /* Estado de HOVER ou SESSÃO ATIVA */
+        .mobile-nav-link:hover, 
+        .mobile-nav-link.active-section {
+            background: rgba(255, 31, 87, 0.15) !important;
+            border-color: #ff1f57 !important;
+            color: #fff !important;
+            transform: translateX(-10px) !important;
+            box-shadow: -5px 0 20px rgba(255, 31, 87, 0.3);
+        }
+
+        /* Estilo específico para o texto quando ativo */
+        .mobile-nav-link.active-section span:last-child {
+            color: #fff !important;
+            text-shadow: 2px 0 #ff1f57, -1px 0 #00ffff; /* Efeito Glitch cromático */
+            letter-spacing: 0.1em;
+        }
+
+        /* Ativar o ícone quando estiver na sessão */
+        .mobile-nav-link.active-section i {
+            opacity: 1 !important;
+            color: #fff !important;
+        }
+
+        /* Seletor específico para o Terminal no Contato */
+        .mobile-nav-link.active-section i.fa-terminal {
+            animation: cyberpunk-pulse 1s infinite;
+        }
+
+        @keyframes cyberpunk-pulse {
+            0% { opacity: 1; filter: brightness(1); }
+            50% { opacity: 0.6; filter: brightness(1.5); }
+            100% { opacity: 1; filter: brightness(1); }
+        }
+
+        /* --- ESTILO CYBERPUNK PARA TODOS OS LINKS DA NAV --- */
+        .nav-link-cyber {
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 6px 16px; /* Menor que o mobile para caber na horizontal */
+            background: rgba(10, 15, 29, 0.7);
+            color: #7289a3;
+            border: 1px solid rgba(255, 31, 87, 0.2);
+            /* Corte poligonal sutil */
+            clip-path: polygon(0 0, 100% 0, 100% 70%, 85% 100%, 0 100%);
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            font-family: 'Inter', sans-serif; /* Use sua fonte principal */
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+        }
+
+        /* Efeito de Hover e Sessão Ativa */
+        .nav-link-cyber:hover, 
+        .nav-link-cyber.active-section {
+            background: rgba(255, 31, 87, 0.1) !important;
+            border-color: #ff1f57 !important;
+            color: #fff !important;
+            transform: translateY(-2px); /* No PC, ele sobe em vez de ir pro lado */
+            box-shadow: 0 5px 15px rgba(255, 31, 87, 0.2);
+        }
+
+        /* Detalhe da barra inferior neon no PC */
+        .nav-link-cyber::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #ff1f57;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link-cyber:hover::after,
+        .nav-link-cyber.active-section::after {
+            width: 100%;
+        }
+
+    </style>
+</head>
+<body class="is-loading text-[#7289a3] cursor-none font-cyber bg-[#02040a] no-select">
+
+    <nav id="navbar" class="fixed top-0 w-full z-[5000] transition-all duration-500 bg-[#02040a]/90 backdrop-blur-md border-b border-[#ff1f57]/10 py-4">
+        <div class="max-w-6xl mx-auto px-8 flex justify-between items-center">
+            <a href="#inicio" class="text-white font-bold text-sm tracking-tighter uppercase group cursor-pointer flex items-center">
+                <i class="fa-brands fa-asymmetrik logo-icon-effect text-[#ff1F57] group-hover:text-white transition-all duration-300 mr-3 text-base"></i>
+                <span class="text-[#ff1f57] group-hover:text-white transition-all duration-300">Ribeiro</span>
+            </a>
+            <div class="hidden md:flex gap-8">
+                <a href="#sobre" class="nav-link nav-link-cyber text-[10px] uppercase tracking-widest hover:text-[#ff1f57] transition-all">Sobre</a>
+                <a href="#habilidades" class="nav-link nav-link-cyber text-[10px] uppercase tracking-widest hover:text-[#ff1f57] transition-all">Habilidades</a>
+                <a href="#projetos" class="nav-link nav-link-cyber text-[10px] uppercase tracking-widest hover:text-[#ff1f57] transition-all">Projetos</a>
+                <a href="#contato" class="nav-link nav-link-cyber text-[10px] uppercase tracking-widest hover:text-[#ff1f57] transition-all">Contato</a>
+            </div>
+            <button id="mobile-menu-btn" class="md:hidden text-[#ff1f57] text-xl outline-none">
+                <i class="fa-solid fa-bars-staggered"></i>
+            </button>
+        </div>
+        <div id="mobile-menu" class="bg-[#02040a]/98 backdrop-blur-2xl px-6 py-10 space-y-4 md:hidden z-[6000]">
+    
+            <a href="#sobre" class="mobile-nav-link group relative flex items-center p-4 bg-[#0a0f1d] border border-[#ff1f57]/10 rounded-lg overflow-hidden transition-all active:scale-95">
+                <div class="absolute left-0 top-0 h-full w-1 bg-[#ff1f57] opacity-50 group-hover:opacity-100 shadow-[0_0_10px_#ff1f57]"></div>
+                <div class="flex-1">
+                    <span class="block text-[8px] text-[#ff1f57] font-bold tracking-[0.2em] mb-1">SECTION_01</span>
+                    <span class="block text-xs text-white uppercase tracking-widest font-bold">Sobre_Mim</span>
+                </div>
+                <i class="fas fa-id-badge text-[#7289a3] group-hover:text-white transition-colors opacity-30"></i>
+            </a>
+
+            <a href="#habilidades" class="mobile-nav-link group relative flex items-center p-4 bg-[#0a0f1d] border border-[#ff1f57]/10 rounded-lg overflow-hidden transition-all active:scale-95">
+                <div class="absolute left-0 top-0 h-full w-1 bg-[#ff1f57] opacity-50 group-hover:opacity-100 shadow-[0_0_10px_#ff1f57]"></div>
+                <div class="flex-1">
+                    <span class="block text-[8px] text-[#ff1f57] font-bold tracking-[0.2em] mb-1">SECTION_02</span>
+                    <span class="block text-xs text-white uppercase tracking-widest font-bold">Hard_Skills</span>
+                </div>
+                <i class="fas fa-microchip text-[#7289a3] group-hover:text-white transition-colors opacity-30"></i>
+            </a>
+
+            <a href="#projetos" class="mobile-nav-link group relative flex items-center p-4 bg-[#0a0f1d] border border-[#ff1f57]/10 rounded-lg overflow-hidden transition-all active:scale-95">
+                <div class="absolute left-0 top-0 h-full w-1 bg-[#ff1f57] opacity-50 group-hover:opacity-100 shadow-[0_0_10px_#ff1f57]"></div>
+                <div class="flex-1">
+                    <span class="block text-[8px] text-[#ff1f57] font-bold tracking-[0.2em] mb-1">SECTION_03</span>
+                    <span class="block text-xs text-white uppercase tracking-widest font-bold">Portfolio</span>
+                </div>
+                <i class="fas fa-code-branch text-[#7289a3] group-hover:text-white transition-colors opacity-30"></i>
+            </a>
+
+            <a href="#contato" class="mobile-nav-link group relative flex items-center p-4 overflow-hidden transition-all active:scale-95">
+                <div class="absolute left-0 top-0 h-full w-1 bg-[#ff1f57] opacity-50 group-hover:opacity-100 shadow-[0_0_10px_#ff1f57]"></div>
+                <div class="flex-1">
+                    <span class="block text-[8px] text-[#ff1f57] font-bold tracking-[0.2em] mb-1">SECTION_04</span>
+                    <span class="block text-xs text-white uppercase tracking-widest font-bold">Contato_Direto</span>
+                </div>
+                <i class="fas fa-terminal text-[#7289a3] group-hover:text-white transition-colors opacity-30"></i>
+            </a>
+
+        </div>
+    </nav>
+
+    <div id="loader" class="fixed inset-0 z-[10000] flex items-center justify-center bg-[#02040a] transition-all duration-1000">
+        <div class="w-full max-w-xl px-6">
+            <div id="code-cascade" class="relative w-full h-80 mb-14 overflow-hidden border-x border-[#ff1f57]/10 flex flex-col justify-end pointer-events-none">
+                <div id="cascade-wrapper" class="flex flex-col gap-1 opacity-40"></div>
+            </div>
+            <div class="bg-[#050812] border border-[#ff1f57]/20 p-6 backdrop-blur-md">
+                <div class="flex justify-between items-end mb-6 border-b border-[#ff1f57]/10 pb-4 text-[#ff1f57]">
+                <div class="overflow-hidden">
+                    <h1 class="text-base md:text-2xl font-bold tracking-tighter uppercase truncate md:whitespace-normal">
+                        Sequência_Autenticação
+                    </h1>
+                    <p class="text-[8px] md:text-[9px] mt-1 uppercase text-[#7289a3] opacity-70">
+                        Usuário: Anderson_Ribeiro.sys
+                    </p>
+                </div>
+                <div class="text-2xl md:text-5xl font-bold leading-none ml-4" id="load-percent">
+                    0%
+                </div>
+            </div>
+                <div class="h-0.5 bg-[#0a0f1d] relative mb-4">
+                    <div id="progress-bar-fill" class="absolute inset-0 bg-[#ff1f57] w-0 shadow-[0_0_15px_#ff1f57]"></div>
+                </div>
+                <div id="status-text" class="text-white text-[11px] uppercase h-4 font-bold">> SINCRONIZANDO...</div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="bg-music" loop preload="auto">
+            <source src="musica.mp3" type="audio/mpeg">
+        </audio>
+
+        <button id="sound-control" class="group relative flex items-center justify-center w-20 h-20 rounded-[1.5rem] bg-gradient-to-b from-[#1e293b] to-[#0f172a] shadow-[0_20px_50px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.1)] border border-slate-800 transition-all duration-500 hover:scale-105 active:scale-95 fixed bottom-6 left-6 z-50">
+    
+            <div id="statusGlow" class="absolute inset-0 rounded-[1.5rem] bg-[#ff1f57]/20 blur-xl opacity-0 transition-opacity duration-700"></div>
+
+            <div id="mutedContent" class="flex flex-col items-center transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)]">
+                <i id="sound-icon" class="fas fa-volume-mute text-slate-400 group-hover:text-white text-xl"></i>
+                <span class="text-[8px] font-bold tracking-[0.2em] text-slate-500 mt-1 uppercase">Mute</span>
+            </div>
+
+            <div id="bars" class="absolute flex items-end gap-[3px] h-6 opacity-0 translate-y-8 blur-md transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)]">
+                <span class="eq-bar b1 w-[3px] rounded-full"></span>
+                <span class="eq-bar b2 w-[3px] rounded-full"></span>
+                <span class="eq-bar b3 w-[3px] rounded-full"></span>
+                <span class="eq-bar b4 w-[3px] rounded-full"></span>
+                <span class="eq-bar b5 w-[3px] rounded-full"></span>
+            </div>
+
+            <div id="led" class="absolute top-3 right-3 w-1.5 h-1.5 rounded-full bg-slate-700 shadow-[0_0_5px_rgba(0,0,0,0.5)] transition-all duration-500"></div>
+        </button>
+
+    <div id="bg-light"></div>
+    <div id="custom-cursor" class="fixed w-5 h-5 border-2 border-[#ff1f57] rounded-full pointer-events-none z-[9999] mix-blend-screen"></div>
+
+    <div id="main-container" class="max-w-6xl mx-auto px-8 opacity-0 translate-y-10 transition-all duration-1000">
+        
+        <header id="inicio" class="pt-40 pb-24 border-b border-[#ff1f57]/10 relative">
+            <div class="flex flex-col md:flex-row items-center md:items-center justify-between gap-8">
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3">
+                        <span class="hud-tag animate-pulse">Status: Online</span>
+                        <span class="text-[10px] text-[#ff1f57]/40 tracking-[0.3em]">NODE_082 // JND_SP</span>
+                    </div>
+                    <h1 id="typewriter-name" class="text-white text-5xl md:text-8xl font-bold uppercase leading-tight min-h-[1.2em]"></h1>
+                    <p class="text-xs uppercase tracking-[0.4em] opacity-50">Engenharia de Software // Arquitetura Back-End</p>
+                </div>
+                <div class="relative w-64 h-64 aspect-square border-2 border-[#ff1f57]/30 overflow-hidden rounded-full shadow-2xl flex-shrink-0 mx-auto md:mx-0">
+                    <img src="https://media.licdn.com/dms/image/v2/D4D03AQFLbzVml-xLpg/profile-displayphoto-crop_800_800/B4DZ0IfwWBKoAI-/0/1773964039689?e=1776902400&v=beta&t=xUBVbu6IpyM0K35rXEW-x14cWpYQXSnuaYJAU6Umxx0" 
+                         alt="Anderson Ribeiro" 
+                         class="w-full h-full object-cover">
+                </div>
+            </div>
+        </header>
+
+        <section id="sobre" class="py-32 border-b border-[#ff1f57]/5 reveal-section">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
+                <div class="md:col-span-4">
+                    <h2 class="session-title text-[#ff1f57] font-bold uppercase tracking-[0.3em] text-2xl mb-4">Sobre_Mim_</h2>
+                    <div class="h-1 w-20 bg-[#ff1f57] shadow-[0_0_10px_#ff1f57]"></div>
+                </div>
+                <div class="md:col-span-8">
+                    <div class="bg-[#050812] border-l-2 border-[#ff1f57] p-8">
+                        <p class="text-white leading-relaxed text-lg font-light italic opacity-90">
+                            "Desenvolvedor de Sistemas em formação pelo <span class="text-[#ff1f57] font-bold">SENAI Jandira</span>, com foco estratégico em arquitetura <span class="text-[#ff1f57]">Back-end</span> e ecossistema <span class="text-[#ff1f57]">Java</span>. Minha abordagem profissional é pautada pela resiliência e análise crítica, características que me permitem decompor problemas complexos em soluções escaláveis e eficientes."
+                        </p>
+                        <p class="mt-6 text-[#7289a3] leading-relaxed">
+                            Sou movido por desafios técnicos que exijam a aplicação rigorosa de lógica e engenharia, buscando constantemente superar limites de performance e segurança em cada linha de código. Em constante evolução, dedico-me ao domínio de estruturas de dados e padrões de projeto para entregar sistemas de alto impacto.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="habilidades" class="py-32 border-b border-[#ff1f57]/5 reveal-section">
+            <h2 class="session-title text-[#ff1f57] font-bold uppercase mb-20 tracking-widest text-lg">Stack_Tecnologica_</h2>
+            <div id="stack-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <div class="stack-card bg-[#050812] border border-[#ff1f57]/10 p-6 hover:border-[#ff1f57]/50 group relative overflow-hidden">
+                    <div class="flex justify-between items-center mb-4">
+                        <i class="fab fa-java text-3xl text-[#ff1f57]"></i>
+                        <span class="text-[10px] text-white/40">BÁSICO</span>
+                    </div>
+                    <h3 class="text-white font-bold mb-2">JAVA / SPRING</h3>
+                    <div class="h-1 bg-[#0a0f1d] w-full mt-4">
+                        <div class="h-full bg-[#ff1f57] shadow-[0_0_10px_#ff1f57]" style="width: 20%"></div>
+                    </div>
+                </div>
+        
+                <div class="stack-card bg-[#050812] border border-[#ff1f57]/10 p-6 hover:border-[#ff1f57]/50 relative overflow-hidden">
+                    <div class="flex justify-between items-center mb-4">
+                        <i class="fab fa-js text-3xl text-[#ff1f57]"></i>
+                        <span class="text-[10px] text-white/40">INTERMEDIÁRIO</span>
+                    </div>
+                    <h3 class="text-white font-bold mb-2">JAVASCRIPT / NODE</h3>
+                    <div class="h-1 bg-[#0a0f1d] w-full mt-4">
+                        <div class="h-full bg-[#ff1f57] shadow-[0_0_10px_#ff1f57]" style="width: 50%"></div>
+                    </div>
+                </div>
+        
+                <div class="stack-card bg-[#050812] border border-[#ff1f57]/10 p-6 hover:border-[#ff1f57]/50 relative overflow-hidden">
+                    <div class="flex justify-between items-center mb-4">
+                        <i class="fas fa-database text-3xl text-[#ff1f57]"></i>
+                        <span class="text-[10px] text-white/40">CONCEITUAL</span>
+                    </div>
+                    <h3 class="text-white font-bold mb-2">SQL / NO-SQL</h3>
+                    <div class="h-1 bg-[#0a0f1d] w-full mt-4">
+                        <div class="h-full bg-[#ff1f57] shadow-[0_0_10px_#ff1f57]" style="width: 15%"></div>
+                    </div>
+                </div>
+
+                <div class="stack-card bg-[#050812] border border-[#ff1f57]/10 p-6 hover:border-[#ff1f57]/50 relative overflow-hidden">
+                    <div class="flex justify-between items-center mb-4">
+                        <i class="fa-brands fa-react text-3xl text-[#ff1f57]"></i>
+                        <span class="text-[10px] text-white/40">INTERMEDIÁRIO</span>
+                    </div>
+                    <h3 class="text-white font-bold mb-2">Frontend / React</h3>
+                    <div class="h-1 bg-[#0a0f1d] w-full mt-4">
+                        <div class="h-full bg-[#ff1f57] shadow-[0_0_10px_#ff1f57]" style="width: 40%"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="projetos" class="py-32 border-b border-[#ff1f57]/5 reveal-section overflow-hidden">
+            <h2 class="session-title text-[#ff1f57] font-bold uppercase mb-24 tracking-widest text-lg">Projetos_Ativos_</h2>
+            
+            <div class="perspective w-full h-[500px] relative flex items-center justify-center">
+                <div id="carousel" class="preserve-3d w-72 h-96 relative">
+                    
+                    <div class="card absolute inset-0 w-full h-full preserve-3d" data-index="0">
+                        <div class="card-inner relative w-full h-full preserve-3d cursor-pointer">
+                            <div class="backface-hidden absolute inset-0 bg-[#050812] border border-[#ff1f57]/20 rounded-xl p-6 flex flex-col justify-between shadow-[0_0_30px_rgba(255,31,87,0.1)]">
+                                <div class="h-40 bg-gradient-to-br from-[#ff1f57]/10 to-transparent rounded-lg flex items-center justify-center border border-[#ff1f57]/10">
+                                    <i class="fa-brands fa-css3-alt text-5xl text-[#ff1f57]"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-white font-bold text-xl uppercase tracking-tighter">Web Color</h3>
+                                    <p class="text-[#7289a3] text-xs mt-2 uppercase tracking-widest">Frontend / JavaScript</p>
+                                </div>
+                            </div>
+                            <div class="backface-hidden absolute inset-0 bg-[#0a0f1d] border-2 border-[#ff1f57] rounded-xl p-6 flex flex-col justify-center text-center [transform:rotateY(180deg)]">
+                                <p class="text-sm text-white leading-relaxed font-mono">Projeto focado em criar paletas de cores para aplicações web.</p>
+                                <a href="https://github.com/Nephyro/web-color" target="_blank" class="mt-4 text-[10px] text-[#ff1f57] font-bold uppercase hover:underline">GitHub _</a>
+                                <a href="https://nephyro.github.io/web-color/" target="_blank" class="mt-4 text-[10px] text-[#ff1f57] font-bold uppercase hover:underline">Projeto _</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card absolute inset-0 w-full h-full preserve-3d" data-index="1">
+                        <div class="card-inner relative w-full h-full preserve-3d cursor-pointer">
+                            <div class="backface-hidden absolute inset-0 bg-[#050812] border border-[#ff1f57]/20 rounded-xl p-6 flex flex-col justify-between shadow-[0_0_30px_rgba(255,31,87,0.1)]">
+                                <div class="h-40 bg-gradient-to-br from-[#ff1f57]/10 to-transparent rounded-lg flex items-center justify-center border border-[#ff1f57]/10">
+                                    <i class="fas fa-cube text-4xl text-[#ff1f57]"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-white font-bold text-xl uppercase tracking-tighter">Limiar Engine</h3>
+                                    <p class="text-[#7289a3] text-xs mt-2 uppercase tracking-widest">3D / Three.js</p>
+                                </div>
+                            </div>
+                            <div class="backface-hidden absolute inset-0 bg-[#0a0f1d] border-2 border-[#ff1f57] rounded-xl p-6 flex flex-col justify-center text-center [transform:rotateY(180deg)]">
+                                <p class="text-sm text-white leading-relaxed font-mono">Sandbox procedural com foco em processamento leve.</p>
+                                <a href="https://github.com/Nephyro/teste_rapido" target="_blank" class="mt-4 text-[10px] text-[#ff1f57] font-bold uppercase hover:underline">Código_fonte _</a>
+                                <a href="https://nephyro.github.io/teste_rapido/" target="_blank" class="mt-4 text-[10px] text-[#ff1f57] font-bold uppercase hover:underline">Acessar _</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card absolute inset-0 w-full h-full preserve-3d" data-index="2">
+                        <div class="card-inner relative w-full h-full preserve-3d cursor-pointer">
+                            <div class="backface-hidden absolute inset-0 bg-[#050812] border border-[#ff1f57]/20 rounded-xl p-6 flex flex-col justify-between shadow-[0_0_30px_rgba(255,31,87,0.1)]">
+                                <div class="h-40 bg-gradient-to-br from-[#ff1f57]/10 to-transparent rounded-lg flex items-center justify-center border border-[#ff1f57]/10">
+                                    <i class="fas fa-microchip text-4xl text-[#ff1f57]"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-white font-bold text-xl uppercase tracking-tighter">API de estados</h3>
+                                    <p class="text-[#7289a3] text-xs mt-2 uppercase tracking-widest">REST / Node.js</p>
+                                </div>
+                            </div>
+                            <div class="backface-hidden absolute inset-0 bg-[#0a0f1d] border-2 border-[#ff1f57] rounded-xl p-6 flex flex-col justify-center text-center [transform:rotateY(180deg)]">
+                                <p class="text-sm text-white leading-relaxed font-mono">Dados de estados e cidades pronta para consumo.</p>
+                                <a href="https://github.com/Nephyro/primeira-api" target="_blank" class="mt-4 text-[10px] text-[#ff1f57] font-bold uppercase hover:underline">GitHub _</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card absolute inset-0 w-full h-full preserve-3d" data-index="3">
+                        <div class="card-inner relative w-full h-full preserve-3d cursor-pointer">
+                            <div class="backface-hidden absolute inset-0 bg-[#050812] border border-[#ff1f57]/20 rounded-xl p-6 flex flex-col justify-between shadow-[0_0_30px_rgba(255,31,87,0.1)]">
+                                <div class="h-40 bg-gradient-to-br from-[#ff1f57]/10 to-transparent rounded-lg flex items-center justify-center border border-[#ff1f57]/10">
+                                    <i class="fas fa-microchip text-4xl text-[#ff1f57]"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-white font-bold text-xl uppercase tracking-tighter">API de WhatsApp</h3>
+                                    <p class="text-[#7289a3] text-xs mt-2 uppercase tracking-widest">REST / Node.js</p>
+                                </div>
+                            </div>
+                            <div class="backface-hidden absolute inset-0 bg-[#0a0f1d] border-2 border-[#ff1f57] rounded-xl p-6 flex flex-col justify-center text-center [transform:rotateY(180deg)]">
+                                <p class="text-sm text-white leading-relaxed font-mono">Integração para gerenciamento de contatos via endpoints.</p>
+                                <a href="https://github.com/Nephyro/whatsappAPI" target="_blank" class="mt-4 text-[10px] text-[#ff1f57] font-bold uppercase hover:underline">GitHub _</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card absolute inset-0 w-full h-full preserve-3d" data-index="4">
+                        <div class="card-inner relative w-full h-full preserve-3d cursor-pointer">
+                            <div class="backface-hidden absolute inset-0 bg-[#050812] border border-[#ff1f57]/20 rounded-xl p-6 flex flex-col justify-between shadow-[0_0_30px_rgba(255,31,87,0.1)]">
+                                <div class="h-40 bg-gradient-to-br from-[#ff1f57]/10 to-transparent rounded-lg flex items-center justify-center border border-[#ff1f57]/10">
+                                    <i class="fa-solid fa-user-secret text-4xl text-[#ff1f57]"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-white font-bold text-xl uppercase tracking-tighter">Em breve</h3>
+                                    <p class="text-[#7289a3] text-xs mt-2 uppercase tracking-widest">Aguardando...</p>
+                                </div>
+                            </div>
+                            <div class="backface-hidden absolute inset-0 bg-[#0a0f1d] border-2 border-[#ff1f57] rounded-xl p-6 flex flex-col justify-center text-center [transform:rotateY(180deg)]">
+                                <p class="text-sm text-white leading-relaxed font-mono">Aguardando lançamento...</p>
+                                <a href="#" target="_blank" class="mt-4 text-[10px] text-[#ff1f57] font-bold uppercase hover:underline">GitHub _</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div> </div> <p class="text-center text-[#7289a3] text-[9px] uppercase tracking-[0.5em] mt-12 animate-pulse">Arraste para girar // Clique para detalhes</p>
+        </section>
+
+        <section class="py-32 reveal-section">
+            <div class="max-w-3xl mx-auto bg-[#0d1117] border border-[#ff1f57]/20 rounded-lg shadow-2xl overflow-hidden">
+                
+                <div class="bg-[#161b22] px-4 py-3 flex items-center justify-between border-b border-[#ffffff]/5">
+                    <div class="flex gap-2">
+                        <div class="w-3 h-3 rounded-full bg-[#ff5f56]"></div> <div class="w-3 h-3 rounded-full bg-[#ffbd2e]"></div> <div class="w-3 h-3 rounded-full bg-[#27c93f]"></div> </div>
+                    <div class="text-[10px] text-[#7289a3] font-mono tracking-widest uppercase">bash — anderson@linux</div>
+                    <div class="w-12"></div> </div>
+        
+                <div class="p-6 font-mono text-sm md:text-base leading-relaxed min-h-[300px]" id="terminal-container">
+                    <div id="terminal-code" class="whitespace-pre-wrap"></div>
+                    <div id="terminal-cursor" class="inline-block w-2 h-5 bg-[#ff1f57] ml-1 align-middle"></div>
+                </div>
+            </div>
+        </section>
+
+        
+
+
+        <footer id="contato" class="footer-custom-bg py-24 mt-20 border-t border-[#ff1f57]/10">
+            <div class="footer-content max-w-6xl mx-auto px-8">
+                <div class="flex flex-col md:flex-row justify-between items-start gap-12">
+                    <div class="space-y-4">
+                        <div class="text-white font-bold text-2xl uppercase tracking-tighter">Anderson <span class="text-[#ff1f57]">Ribeiro</span></div>
+                        <div class="text-[11px] space-y-2 opacity-70 font-mono">
+                            <p><i class="fas fa-envelope text-[#ff1f57] mr-2"></i> anderson.soares.4245@gmail.com</p>
+                            <p><i class="fas fa-phone text-[#ff1f57] mr-2"></i> (11) 99160-6429</p>
+                            <p><i class="fab fa-github text-[#ff1f57] mr-2"></i> github.com/Nephyro</p>
+                            <p><i class="fab fa-instagram text-[#ff1f57] mr-2"></i> @ander_wave</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 md:gap-8">
+                        <a href="https://github.com/Nephyro" target="_blank" class="hud-tag hover:bg-[#ff1f57] hover:text-white transition">Github</a>
+                        <a href="https://www.instagram.com/ander_wave/" target="_blank" class="hud-tag hover:bg-[#ff1f57] hover:text-white transition">Instagram</a>
+                        <a href="mailto:anderson.soares.4245@gmail.com" class="hud-tag hover:bg-[#ff1f57] hover:text-white transition">Gmail</a>
+                        <a href="https://wa.me/5511991606429" target="_blank" class="hud-tag hover:bg-[#ff1f57] hover:text-white transition">WhatsApp</a>
+                    </div>
+                </div>
+                <div class="mt-20 text-center text-[9px] opacity-20 uppercase tracking-[1em]">Copyright © 2026 || Todos os direitos reservados</div>
+            </div>
+        </footer>
+    </div>
+    <script>
+        // Força o scroll para o topo antes do reload terminar
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+        window.scrollTo(0, 0);
+
+        // Flag global para controle de estado da música
+        let musicStarted = false;
+
+        window.addEventListener('load', () => {
+            // --- ELEMENTOS DO DOM ---
+            const loader = document.getElementById('loader');
+            const container = document.getElementById('main-container');
+            const percentEl = document.getElementById('load-percent');
+            const progressBarFill = document.getElementById('progress-bar-fill');
+            const cascadeWrapper = document.getElementById('cascade-wrapper');
+            const navbar = document.getElementById('navbar');
+            
+            
+            // --- LÓGICA DO MENU MOBILE ---
+            const menuBtn = document.getElementById('mobile-menu-btn'); 
+            const mobileMenu = document.getElementById('mobile-menu');
+
+                if (menuBtn && mobileMenu) {
+                menuBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    mobileMenu.classList.toggle('active'); // Alterna a classe de animação
+                });
+
+                const mobileLinks = document.querySelectorAll('.mobile-nav-link');
+                mobileLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        mobileMenu.classList.remove('active'); // Fecha suavemente ao clicar
+                    });
+                });
+                
+                // Opcional: fecha o menu se clicar fora dele
+                document.addEventListener('click', (e) => {
+                    if (!mobileMenu.contains(e.target) && !menuBtn.contains(e.target)) {
+                        mobileMenu.classList.remove('active');
+                    }
+                });
+            }
+            
+            
+            // Elementos de Áudio
+            const audio = document.getElementById('bg-music');
+            const soundBtn = document.getElementById('sound-control');
+            const soundIcon = document.getElementById('sound-icon');
+            const led = document.getElementById('led');
+            const glow = document.getElementById('statusGlow');
+            const mutedContent = document.getElementById('mutedContent');
+            const barsContainer = document.getElementById('bars');
+
+            // --- 1. NAVBAR (Comportamento de Scroll) ---
+            let lastScrollTop = 0;
+
+            // --- DETECTOR DE SESSÃO ATIVA (SCROLL SPY) ---
+            const sections = document.querySelectorAll("section, header");
+            const navLinks = document.querySelectorAll(".mobile-nav-link, .nav-link-cyber");
+
+            window.addEventListener('scroll', () => {
+                // Lógica da Navbar (Esconder/Mostrar)
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (navbar) {
+                    navbar.style.transform = (scrollTop > lastScrollTop && scrollTop > 100) ? "translateY(-100%)" : "translateY(0)";
+                }
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+
+                // Lógica do Scroll Spy (Sessão Ativa)
+                let current = "";
+                sections.forEach((section) => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 150) {
+                        current = section.getAttribute("id");
+                    }
+                });
+
+                navLinks.forEach((link) => {
+                    link.classList.remove("active-section");
+                    // Verifica se o href do link corresponde à seção atual
+                    if (current && link.getAttribute("href").includes(current)) {
+                        link.classList.add("active-section");
+                    }
+                });
+            }, { passive: true });
+
+            // --- 2. SCROLL SUAVE PARA LINKS ---
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    const targetId = this.getAttribute('href');
+                    if (targetId.startsWith("#")) {
+                        e.preventDefault();
+                        
+                        // Se for mobile, fecha o menu ao clicar (opcional, mas recomendado)
+                        const mobileMenu = document.getElementById('mobile-menu');
+                        if (mobileMenu) mobileMenu.classList.remove('active');
+
+                        if (targetId === "#inicio") {
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                            return;
+                        }
+                        const targetElement = document.querySelector(targetId);
+                        if (targetElement) {
+                            const offset = 90; 
+                            const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - offset;
+                            window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+                        }
+                    }
+                });
+            });
+
+            // --- 3. LOADER (Efeito de Cascata de Código) ---
+            const codeFragments = ["BOOT_NODE_082", "AUTH_KEY_VERIFIED", "SQL_SHIELD_UP", "JVM_THREAD_INIT", "ENCRYPT_AES_256"];
+            function createCodeLine() {
+                if (!cascadeWrapper) return;
+                const line = document.createElement('div');
+                line.className = "whitespace-nowrap flex gap-4 text-[10px] font-mono";
+                line.innerHTML = `<span class="text-[#ff1f57]/40">[${Math.random().toString().slice(2,10)}]</span><span class="text-white/80">${codeFragments[Math.floor(Math.random() * codeFragments.length)]}</span>`;
+                cascadeWrapper.appendChild(line);
+                if (cascadeWrapper.childNodes.length > 25) cascadeWrapper.removeChild(cascadeWrapper.firstChild);
+            }
+            const cascadeInterval = setInterval(createCodeLine, 50);
+
+            // --- 4. TYPEWRITER (Header) ---
+            function typeFullTitle() {
+                const name = "ANDERSON RIBEIRO";
+                const titleContainer = document.getElementById('typewriter-name');
+                if (!titleContainer) return;
+                let i = 0;
+                function step() {
+                    if (i < name.length) {
+                        const span = document.createElement('span');
+                        const char = name.charAt(i);
+                        if (['R', 'B', 'A', 'S', 'D'].includes(char) && Math.random() > 0.4) span.className = 'neon-flicker';
+                        span.textContent = char;
+                        titleContainer.appendChild(span);
+                        i++; setTimeout(step, 85);
+                    }
+                }
+                step();
+            }
+
+            // --- 5. PROGRESSO DO CARREGAMENTO ---
+            let progress = 0;
+            const bootInterval = setInterval(() => {
+                progress += Math.floor(Math.random() * 12) + 1;
+                if (progress >= 100) {
+                    progress = 100; 
+                    clearInterval(bootInterval); 
+                    clearInterval(cascadeInterval);
+                    
+                    setTimeout(() => { 
+                        if(loader) loader.style.opacity = '0'; 
+                        setTimeout(() => { 
+                            if(loader) loader.remove(); 
+                            document.body.classList.remove('is-loading'); 
+                            if(container) container.classList.remove('opacity-0', 'translate-y-10'); 
+                            typeFullTitle();
+                        }, 800); 
+                    }, 500);
+                }
+                if(percentEl) percentEl.innerText = `${progress}%`; 
+                if(progressBarFill) progressBarFill.style.width = `${progress}%`; 
+            }, 90);
+
+            // --- 6. LÓGICA DE ÁUDIO (SINCRONIZADA) ---
+            function updateAudioVisuals(playing) {
+                if (playing) {
+                    // Transição de conteúdo: Sai ícone, entra Equalizador
+                    mutedContent.classList.add('opacity-0', '-translate-y-8', 'blur-md');
+                    barsContainer.classList.remove('opacity-0', 'translate-y-8', 'blur-md');
+                    barsContainer.classList.add('opacity-100', 'translate-y-0');
+
+                    // Feedback de Hardware (LED e Brilho)
+                    if (led) {
+                        led.style.backgroundColor = '#ff1f57';
+                        led.style.boxShadow = '0 0 8px #ff1f57';
+                    }
+                    if (glow) glow.style.opacity = '1';
+                    
+                    soundBtn.classList.add('shadow-[0_20px_50px_rgba(255,31,87,0.2)]');
+                    soundBtn.style.borderColor = 'rgba(255, 31, 87, 0.4)';
+                } else {
+                    // Volta ao estado de Mudo
+                    mutedContent.classList.remove('opacity-0', '-translate-y-8', 'blur-md');
+                    barsContainer.classList.add('opacity-0', 'translate-y-8', 'blur-md');
+                    barsContainer.classList.remove('opacity-100', 'translate-y-0');
+
+                    // Desliga Feedbacks
+                    if (led) {
+                        led.style.backgroundColor = '#334155'; // Cor slate-700
+                        led.style.boxShadow = 'none';
+                    }
+                    if (glow) glow.style.opacity = '0';
+                    
+                    soundBtn.classList.remove('shadow-[0_20px_50px_rgba(255,31,87,0.2)]');
+                    soundBtn.style.borderColor = 'rgba(255, 31, 87, 0.1)';
+                }
+            }
+
+            // Sincronização Automática
+            if (audio) {
+            // Força o loop nativo
+                audio.loop = true;
+
+                // EVENTO CHAVE: Reinicia antes do "silêncio" do arquivo (Gapless Trick)
+                audio.addEventListener('timeupdate', function() {
+                    // Se faltar menos de 0.3 segundos para acabar, volta para o início
+                    // Esse valor (0.3) pode ser ajustado dependendo do seu arquivo de áudio
+                    const buffer = 0.3; 
+                    if (this.currentTime > this.duration - buffer) {
+                        this.currentTime = 0;
+                        this.play();
+                    }
+                });
+
+                audio.onplay = () => updateAudioVisuals(true);
+                audio.onpause = () => updateAudioVisuals(false);
+            }
+
+            function toggleSound() {
+                if (audio.paused) {
+                    audio.volume = 0.05;
+                    audio.play().catch(err => console.log("Erro ao tocar:", err));
+                } else {
+                    audio.pause();
+                }
+            }
+
+            function handleFirstMusicInteraction() {
+                if (!musicStarted && audio) {
+                    audio.volume = 0.05;
+                    audio.play().then(() => {
+                        musicStarted = true;
+                        document.removeEventListener("mousedown", handleFirstMusicInteraction);
+                        document.removeEventListener("keydown", handleFirstMusicInteraction);
+                        document.removeEventListener("touchstart", handleFirstMusicInteraction);
+                    }).catch(err => console.log("Aguardando interação real..."));
+                }
+            }
+
+            if (soundBtn) {
+                soundBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (!musicStarted) handleFirstMusicInteraction();
+                    else toggleSound();
+                });
+            }
+
+            document.addEventListener("mousedown", handleFirstMusicInteraction);
+            document.addEventListener("keydown", handleFirstMusicInteraction);
+            document.addEventListener("touchstart", handleFirstMusicInteraction);
+
+
+            // --- 7. ROLETA 3D DE PROJETOS ---
+            const carousel = document.getElementById('carousel');
+            const cards = document.querySelectorAll('.card');
+            if (carousel && cards.length > 0) {
+                let currentIndex = 0;
+                const angleStep = 360 / cards.length;
+                const radius = window.innerWidth < 768 ? 200 : 350; 
+                let isDragging = false, startX = 10, currentDragDistance = 0;
+
+                cards.forEach((card, i) => {
+                    card.style.transform = `rotateY(${i * angleStep}deg) translateZ(${radius}px)`;
+                });
+
+                const updateRotation = () => {
+                    carousel.style.transform = `translateZ(-${radius}px) rotateY(${currentIndex * -angleStep}deg)`;
+                };
+                updateRotation();
+
+                const onStart = (e) => {
+                    isDragging = true;
+                    startX = e.pageX || e.touches[0].pageX;
+                    currentDragDistance = 0;
+                };
+                const onMove = (e) => {
+                    if (!isDragging) return;
+                    currentDragDistance = (e.pageX || e.touches[0].pageX) - startX;
+                };
+                const onEnd = () => {
+                    if (!isDragging) return;
+                    if (Math.abs(currentDragDistance) > 80) {
+                        currentDragDistance > 0 ? currentIndex-- : currentIndex++;
+                        updateRotation();
+                    }
+                    isDragging = false;
+                };
+
+                window.addEventListener('mousedown', onStart);
+                window.addEventListener('mousemove', onMove);
+                window.addEventListener('mouseup', onEnd);
+                window.addEventListener('touchstart', onStart);
+                window.addEventListener('touchmove', onMove);
+                window.addEventListener('touchend', onEnd);
+
+                cards.forEach(card => {
+                    card.addEventListener('click', () => {
+                        if (Math.abs(currentDragDistance) < 10) card.classList.toggle('flipped');
+                    });
+                });
+            }
+
+            // --- 8. TERMINAL ---
+            const terminalData = [
+                { text: "anderson@linux:~$ ", color: "#60a5fa", type: "prompt" }, 
+                { text: "python3 hello_world.py", color: "#fff", type: "input", delay: 80 }, 
+                { text: "Traceback (most recent call last):", color: "#ef4444", type: "output" },
+                { text: '  File "hello_world.py", line 1, in <module>', color: "#ef4444", type: "output" },
+                { text: "PermissionError: [Errno 13] Permission denied", color: "#ef4444", type: "output" },
+                { text: "anderson@linux:~$ ", color: "#60a5fa", type: "prompt" },
+                { text: "...", color: "#fff", type: "input", delay: 1000 },
+                { text: "sudo !!", color: "#fff", type: "input", delay: 150 },
+                { text: "[sudo] password for developer: **********", color: "#7289a3", type: "input", delay: 50 },
+                { text: "Hello World!", color: "#f1fa8c", type: "success" } 
+            ];
+            
+            let isTerminalTyping = false;
+            async function typeTerminal() {
+            const terminalEl = document.getElementById('terminal-code');
+            const cursor = document.getElementById('terminal-cursor');
+            if (!terminalEl || isTerminalTyping) return;
+            isTerminalTyping = true;
+
+            for (const line of terminalData) {
+                const span = document.createElement('span');
+                span.style.color = line.color;
+                if (line.type === "success") span.className = "block text-xl font-bold mt-2 text-[#7ee787] animate-pulse";
+                terminalEl.appendChild(span);
+
+                if (line.type === "input") {
+                    span.appendChild(cursor); 
+                    
+                    // ATIVA o modo estático (parar de piscar)
+                    cursor.classList.add('typing');
+
+                    for (const char of line.text) {
+                        const charNode = document.createTextNode(char);
+                        span.insertBefore(charNode, cursor); 
+                        await new Promise(r => setTimeout(r, line.delay || 35));
+                    }
+
+                    // DESATIVA o modo estático (volta a piscar) ao fim da linha
+                    cursor.classList.remove('typing');
+                    
+                    terminalEl.appendChild(document.createElement('br'));
+                } else {
+                    span.textContent = line.text;
+                    if (line.type !== "prompt") terminalEl.appendChild(document.createElement('br'));
+                    terminalEl.appendChild(cursor);
+                }
+
+                // Tempo de espera entre uma linha e outra (o cursor pisca aqui)
+                await new Promise(r => setTimeout(r, 600));
+                
+                const containerTerm = document.getElementById('terminal-container');
+                if(containerTerm) containerTerm.scrollTop = containerTerm.scrollHeight;
+            }
+            }
+
+            // --- 9. MOUSE EFFECT ---
+            document.addEventListener('mousemove', (e) => {
+                if (window.innerWidth <= 1024) return;
+                const bgLight = document.getElementById('bg-light');
+                const cursor = document.getElementById('custom-cursor');
+                const stackCards = document.querySelectorAll('.stack-card');
+
+                if (bgLight) bgLight.style.background = `radial-gradient(circle 250px at ${e.clientX}px ${e.clientY}px, transparent 0%, rgba(2, 4, 10, 1) 100%)`;
+                if (cursor) { 
+                    cursor.style.left = `${e.clientX}px`; 
+                    cursor.style.top = `${e.clientY}px`; 
+                }
+
+                stackCards.forEach(card => {
+                    const rect = card.getBoundingClientRect();
+                    if (e.clientX > rect.left - 50 && e.clientX < rect.right + 50 &&
+                        e.clientY > rect.top - 50 && e.clientY < rect.bottom + 50) {
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+                        const rotateX = (y / rect.height - 0.5) * -25; 
+                        const rotateY = (x / rect.width - 0.5) * 25;   
+                        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`;
+                        card.style.borderColor = "rgba(255, 31, 87, 0.8)";
+                    } else {
+                        card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+                        card.style.borderColor = "rgba(255, 31, 87, 0.1)";
+                    }
+                });
+            });
+
+            // --- 10. OBSERVER ---
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => { 
+                    if(entry.isIntersecting) { 
+                        if(entry.target.id === 'terminal-code') typeTerminal();
+                        else entry.target.classList.add('active'); 
+                    } 
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal-section, #terminal-code').forEach(s => observer.observe(s));
+        });
+    </script>
+</body>
+</html>
